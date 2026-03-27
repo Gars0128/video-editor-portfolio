@@ -1,0 +1,7 @@
+{
+  "name": "video-editor-portfolio-root",
+  "private": true,
+  "scripts": {
+    "vercel-build": "cd video-editor-portfolio-main && npm install && npm run build"
+  }
+}
