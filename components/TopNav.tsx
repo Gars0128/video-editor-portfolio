@@ -1,78 +1,98 @@
 "use client";
 
 import { navItems } from "@/lib/content";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-function pickActiveSectionId(): string {
+const NAV_IDS = new Set(navItems.map((i) => i.id));
+
+function readHashNavId(): string | null {
+  const id = window.location.hash.replace(/^#/, "");
+  return id && NAV_IDS.has(id) ? id : null;
+}
+
+/**
+ * Последняя по порядку на странице секция, чей верх уже выше «линии внимания».
+ * Линия ниже шапки (~верх экрана + доля высоты окна), иначе следующая секция
+ * становится активной слишком поздно и «Portfolio» залипает при переходе на Pricing.
+ */
+function pickActiveSectionIdFromScroll(): string {
   const header = document.querySelector("header");
   const headerBottom = header?.getBoundingClientRect().bottom ?? 72;
-  const y = headerBottom + Math.max(48, (window.innerHeight - headerBottom) * 0.12);
+  const line = Math.max(headerBottom + 28, window.innerHeight * 0.3);
 
-  const sections = navItems
-    .map((item) => document.getElementById(item.id))
-    .filter((el): el is HTMLElement => Boolean(el));
+  const ordered = navItems
+    .map((item) => ({ id: item.id, el: document.getElementById(item.id) }))
+    .filter((x): x is { id: string; el: HTMLElement } => Boolean(x.el))
+    .sort((a, b) => a.el.offsetTop - b.el.offsetTop);
 
-  for (const el of sections) {
-    const r = el.getBoundingClientRect();
-    if (r.top <= y && r.bottom >= y) {
-      return el.id;
+  if (ordered.length === 0) return "hero";
+
+  let active = ordered[0].id;
+  for (const { id, el } of ordered) {
+    if (el.getBoundingClientRect().top <= line) {
+      active = id;
     }
   }
-
-  let fallback: HTMLElement | null = null;
-  let bestTop = -Infinity;
-  for (const el of sections) {
-    const r = el.getBoundingClientRect();
-    if (r.top <= y && r.top > bestTop) {
-      bestTop = r.top;
-      fallback = el;
-    }
-  }
-  return fallback?.id ?? "hero";
+  return active;
 }
 
 export function TopNav() {
   const [active, setActive] = useState<string>("hero");
+  const scrollDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const syncActive = useCallback(() => {
-    setActive(pickActiveSectionId());
+  const applyScrollSpy = useCallback(() => {
+    setActive(pickActiveSectionIdFromScroll());
+  }, []);
+
+  const scheduleScrollSpy = useCallback(() => {
+    if (scrollDebounceRef.current != null) clearTimeout(scrollDebounceRef.current);
+    scrollDebounceRef.current = setTimeout(() => {
+      scrollDebounceRef.current = null;
+      applyScrollSpy();
+    }, 64);
+  }, [applyScrollSpy]);
+
+  const setActiveFromHref = useCallback((href: string | null) => {
+    if (!href?.startsWith("#")) return;
+    const id = href.slice(1);
+    if (NAV_IDS.has(id)) setActive(id);
   }, []);
 
   useEffect(() => {
-    const sectionEls = navItems
-      .map((item) => document.getElementById(item.id))
-      .filter(Boolean) as HTMLElement[];
-
-    const obs = new IntersectionObserver(syncActive, {
-      rootMargin: "0px",
-      threshold: [0, 0.02, 0.06, 0.12, 0.2, 0.35, 0.5, 0.65, 0.8, 1]
-    });
-    sectionEls.forEach((el) => obs.observe(el));
-
-    window.addEventListener("scroll", syncActive, { passive: true });
-    window.addEventListener("resize", syncActive);
+    const fromHash = readHashNavId();
+    if (fromHash) setActive(fromHash);
+    else applyScrollSpy();
 
     const onHash = () => {
-      const id = window.location.hash.replace(/^#/, "");
-      if (id && navItems.some((i) => i.id === id)) {
-        requestAnimationFrame(() => syncActive());
-      }
+      const id = readHashNavId();
+      if (id) setActive(id);
+      else applyScrollSpy();
     };
+
     window.addEventListener("hashchange", onHash);
-    syncActive();
+    window.addEventListener("scroll", scheduleScrollSpy, { passive: true });
+    window.addEventListener("resize", scheduleScrollSpy);
+
+    const onScrollEnd = () => applyScrollSpy();
+    window.addEventListener("scrollend" as keyof WindowEventMap, onScrollEnd as EventListener);
 
     return () => {
-      obs.disconnect();
-      window.removeEventListener("scroll", syncActive);
-      window.removeEventListener("resize", syncActive);
+      if (scrollDebounceRef.current != null) clearTimeout(scrollDebounceRef.current);
       window.removeEventListener("hashchange", onHash);
+      window.removeEventListener("scroll", scheduleScrollSpy);
+      window.removeEventListener("resize", scheduleScrollSpy);
+      window.removeEventListener("scrollend" as keyof WindowEventMap, onScrollEnd as EventListener);
     };
-  }, [syncActive]);
+  }, [applyScrollSpy, scheduleScrollSpy]);
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 px-4 pt-4 md:px-6">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 rounded-full border border-[color:rgba(96,65,51,0.12)] bg-[rgba(255,248,241,0.78)] px-4 py-2.5 shadow-[0_14px_40px_rgba(111,76,61,0.08)] backdrop-blur-xl md:gap-3 md:px-5">
-        <a href="#hero" className="min-h-11 shrink-0 py-2">
+        <a
+          href="#hero"
+          className="min-h-11 shrink-0 py-2"
+          onClick={() => setActive("hero")}
+        >
           <span className="block font-display text-sm tracking-[0.22em] text-[var(--text)]">
             MARTA VAITKEVICH
           </span>
@@ -93,7 +113,7 @@ export function TopNav() {
                 <a
                   key={item.id}
                   href={item.href}
-                  onClick={() => setActive(item.id)}
+                  onClick={() => setActiveFromHref(item.href)}
                   className={`flex min-h-11 flex-1 items-center justify-center rounded-full px-2 py-2 text-center text-xs font-semibold tracking-[0.08em] transition sm:px-3 ${
                     isActive
                       ? "bg-[var(--text)] text-[#fff6ef]"
@@ -109,6 +129,7 @@ export function TopNav() {
         <div className="flex shrink-0 items-center gap-2">
           <a
             href="#contact"
+            onClick={() => setActive("contact")}
             className="inline-flex min-h-11 items-center rounded-full bg-[var(--accent-deep)] px-4 py-3 text-xs font-semibold tracking-[0.08em] text-[#fff6ef] transition hover:bg-[var(--accent)]"
           >
             Start a project

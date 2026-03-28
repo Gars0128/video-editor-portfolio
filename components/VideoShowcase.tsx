@@ -14,7 +14,7 @@ export function VideoShowcase() {
       <div className="mx-auto max-w-6xl">
         <AnimatedReveal>
           <SectionHeading
-            index="05"
+            index="02"
             eyebrow="Video examples"
             title="Selected works"
             description="The previews are inline and mobile-friendly, using Marta's actual footage."

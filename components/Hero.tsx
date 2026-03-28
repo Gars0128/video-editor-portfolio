@@ -13,8 +13,9 @@ export function Hero() {
       id="hero"
       className="relative overflow-hidden px-5 pb-20 pt-28 md:px-10 md:pb-24 md:pt-36"
     >
+      {/* Лёгкий свет сверху без «прямоугольника» — общий фон уже в body / .site-shell */}
       <div
-        className="pointer-events-none absolute inset-x-5 top-6 h-[26rem] rounded-[2.5rem] border border-[color:rgba(96,65,51,0.08)] bg-white/20 md:inset-x-10"
+        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_120%_70%_at_50%_-20%,rgba(255,252,248,0.55),transparent_58%)]"
         aria-hidden
       />
 
@@ -36,7 +37,7 @@ export function Hero() {
             initial={reduceMotion ? false : { opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.75, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
-            className="font-display mt-6 max-w-[11.5ch] text-[clamp(2.8rem,6.4vw,5rem)] leading-[0.94] tracking-[-0.04em] text-[var(--text)]"
+            className="font-display balanced-text mt-6 max-w-[min(100%,34ch)] text-[clamp(2.05rem,3.6vw+0.75rem,3.35rem)] leading-[1.08] tracking-[-0.03em] text-[var(--text)] md:leading-[1.06] md:tracking-[-0.032em]"
           >
             {heroContent.title}
           </motion.h1>

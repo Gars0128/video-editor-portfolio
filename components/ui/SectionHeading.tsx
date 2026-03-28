@@ -1,9 +1,11 @@
 type SectionHeadingProps = {
-  eyebrow: string;
+  eyebrow?: string;
   title?: string;
   description: string;
   align?: "left" | "center";
   index?: string;
+  /** Smaller display title (e.g. section label instead of hero-scale headline) */
+  titleSize?: "default" | "compact";
 };
 
 export function SectionHeading({
@@ -11,9 +13,14 @@ export function SectionHeading({
   title,
   description,
   align = "left",
-  index
+  index,
+  titleSize = "default"
 }: SectionHeadingProps) {
   const alignClass = align === "center" ? "mx-auto max-w-3xl text-center" : "max-w-3xl";
+  const titleClass =
+    titleSize === "compact"
+      ? "font-display balanced-text text-[clamp(1.65rem,2.6vw,2.35rem)] font-semibold leading-[1.08] tracking-[-0.02em] text-[var(--text)] md:text-[clamp(1.85rem,2.8vw,2.6rem)]"
+      : "font-display balanced-text text-[clamp(2rem,4.6vw,4.2rem)] font-semibold leading-[0.96] tracking-[-0.02em] text-[var(--text)]";
   return (
     <div className={`${alignClass} mb-12 md:mb-16`}>
       <div
@@ -24,17 +31,17 @@ export function SectionHeading({
             {index}
           </span>
         ) : null}
-        <span className="hidden h-px w-8 bg-[color:rgba(166,88,67,0.35)] sm:block" aria-hidden />
-        <p className="eyebrow text-[11px] font-semibold">
-          {eyebrow}
-        </p>
+        {eyebrow ? (
+          <>
+            <span className="hidden h-px w-8 bg-[color:rgba(166,88,67,0.35)] sm:block" aria-hidden />
+            <p className="eyebrow text-[11px] font-semibold">{eyebrow}</p>
+          </>
+        ) : null}
       </div>
-      {title ? (
-        <h2 className="font-display balanced-text text-[clamp(2rem,4.6vw,4.2rem)] font-semibold leading-[0.96] tracking-[-0.02em] text-[var(--text)]">
-          {title}
-        </h2>
-      ) : null}
-      <h3 className="mt-5 max-w-2xl text-sm font-normal leading-relaxed text-[var(--muted)] md:text-base">
+      {title ? <h2 className={titleClass}>{title}</h2> : null}
+      <h3
+        className={`max-w-2xl text-sm font-normal leading-relaxed text-[var(--muted)] md:text-base ${title ? "mt-5" : "mt-3"}`}
+      >
         {description}
       </h3>
     </div>

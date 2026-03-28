@@ -16,6 +16,8 @@
 
 html {
   scroll-behavior: smooth;
+  /* Фиксированная шапка: якоря не уезжают под TopNav */
+  scroll-padding-top: 6.5rem;
   background: var(--bg);
 }
 

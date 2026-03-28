@@ -13,9 +13,8 @@ export function Services() {
       <div className="mx-auto max-w-6xl">
         <AnimatedReveal>
           <SectionHeading
-            index="02"
+            index="04"
             eyebrow="Services"
-            title="Flexible support for brands, creators, and campaigns that need both content and edit logic."
             description="Marta can create the full UGC piece, develop the opening idea, or step in only for post-production when the footage already exists."
           />
         </AnimatedReveal>

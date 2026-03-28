@@ -19,11 +19,12 @@ export const siteMeta = {
   email: "martavaitkevich@gmail.com"
 } as const;
 
+/** Порядок пунктов совпадает с порядком секций на главной (для навигации и футера). */
 export const navItems = [
   { label: "Home", href: "#hero", id: "hero" },
   { label: "About", href: "#about", id: "about" },
+  { label: "Portfolio", href: "#showcase", id: "showcase" },
   { label: "Pricing", href: "#pricing", id: "pricing" },
-  { label: "Portfolio", href: "#portfolio", id: "portfolio" },
   { label: "Contact", href: "#contact", id: "contact" }
 ] as const;
 
@@ -51,8 +52,7 @@ export const heroContent = {
 } as const;
 
 export const aboutContent = {
-  eyebrow: "About Marta",
-  title: "Natural on camera, precise in the edit, and built for short-form attention spans.",
+  title: "About Marta",
   description:
     "Marta works across creator content and post-production. She develops hooks, films natural-looking UGC, and edits for retention so the final piece feels authentic while still working for ads and social.",
   supportingText:
@@ -163,33 +163,6 @@ export const pricingItems = [
   }
 ] as const;
 
-export const portfolioItems = [
-  {
-    title: "Beauty-first UGC",
-    category: "Skincare / ads / social",
-    description:
-      "Product-focused creator videos with clean captions, tactile details, and a natural beauty tone.",
-    image: "/marta/posters/dr-althea-first-frame.png",
-    tags: ["UGC", "Beauty", "Subtitles"]
-  },
-  {
-    title: "Lifestyle positioning",
-    category: "clothing brand / Creator Identity",
-    description:
-      "Casual but polished frames that help a founder, creator, or product feel closer to the audience.",
-    image: "/marta/posters/skims-body-first-frame.png",
-    tags: ["Lifestyle", "Creator", "Organic feel"]
-  },
-  {
-    title: "Engaging Edits",
-    category: "transitions / sound effects / storytelling",
-    description:
-      "Marta shapes the opening, pacing, and edit structure so the content keeps attention.",
-    image: "/marta/posters/mrtvld-montage-first-frame.png",
-    tags: ["Hooks", "Editing", "Retention"]
-  }
-] as const;
-
 export const showcaseItems = [
   {
     title: "Skincare Ritual Cut",
@@ -211,26 +184,5 @@ export const showcaseItems = [
     src: "/marta/videos/mrtvld-montage.mp4",
     poster: "/marta/posters/mrtvld-montage-first-frame.png",
     label: "Editing sample"
-  }
-] as const;
-
-export const processItems = [
-  {
-    step: "01",
-    title: "Start with the hook",
-    description:
-      "The opening seconds are treated like strategy, not decoration. The message has to land fast."
-  },
-  {
-    step: "02",
-    title: "Keep it human on camera",
-    description:
-      "The delivery stays natural, relatable, and creator-native so the content does not feel over-scripted."
-  },
-  {
-    step: "03",
-    title: "Edit for retention",
-    description:
-      "Cuts, captions, and pacing are shaped to carry attention through the middle and into the CTA."
   }
 ] as const;

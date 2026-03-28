@@ -37,11 +37,11 @@ export function CTA() {
             <div>
               <p className="eyebrow text-[11px] font-semibold text-[#efccbc]">Contact</p>
               <h2 className="font-display mt-5 balanced-text text-4xl leading-[0.94] text-[#fff8f2] md:text-[4.4rem]">
-                Need creator-led content that feels native and still sells?
+                Need UGC or an edit?
               </h2>
               <p className="mt-6 max-w-xl text-sm leading-relaxed text-[#ead7cf] sm:text-base">
-                Send the product, the angle, or a rough brief. Marta can shape the hook, shoot the
-                content, edit the final piece, or handle the full delivery flow.
+                Send a short brief or the product details — Marta can film, edit, or take it from idea
+                to final cut.
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:flex-col lg:items-stretch">

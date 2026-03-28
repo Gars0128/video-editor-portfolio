@@ -2,9 +2,7 @@ import { About } from "@/components/About";
 import { CTA } from "@/components/CTA";
 import { Footer } from "@/components/Footer";
 import { Hero } from "@/components/Hero";
-import { Portfolio } from "@/components/Portfolio";
 import { Pricing } from "@/components/Pricing";
-import { Process } from "@/components/Process";
 import { Services } from "@/components/Services";
 import { TopNav } from "@/components/TopNav";
 import { VideoShowcase } from "@/components/VideoShowcase";
@@ -16,11 +14,9 @@ export default function HomePage() {
         <TopNav />
         <Hero />
         <About />
-        <Services />
-        <Pricing />
-        <Portfolio />
         <VideoShowcase />
-        <Process />
+        <Pricing />
+        <Services />
         <CTA />
         <Footer />
       </main>

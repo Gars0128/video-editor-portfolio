@@ -12,8 +12,8 @@ export function About() {
         <AnimatedReveal>
           <SectionHeading
             index="01"
-            eyebrow={aboutContent.eyebrow}
             title={aboutContent.title}
+            titleSize="compact"
             description={aboutContent.description}
           />
           <p className="max-w-xl text-base leading-relaxed text-[var(--muted)]">
