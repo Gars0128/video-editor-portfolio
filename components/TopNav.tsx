@@ -3,11 +3,12 @@
 import { navItems } from "@/lib/content";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-const NAV_IDS = new Set(navItems.map((i) => i.id));
+type NavId = (typeof navItems)[number]["id"];
 
-function readHashNavId(): string | null {
+function readHashNavId(): NavId | null {
   const id = window.location.hash.replace(/^#/, "");
-  return id && NAV_IDS.has(id) ? id : null;
+  const hit = navItems.find((item) => item.id === id);
+  return hit?.id ?? null;
 }
 
 /**
@@ -15,14 +16,14 @@ function readHashNavId(): string | null {
  * Линия ниже шапки (~верх экрана + доля высоты окна), иначе следующая секция
  * становится активной слишком поздно и «Portfolio» залипает при переходе на Pricing.
  */
-function pickActiveSectionIdFromScroll(): string {
+function pickActiveSectionIdFromScroll(): NavId {
   const header = document.querySelector("header");
   const headerBottom = header?.getBoundingClientRect().bottom ?? 72;
   const line = Math.max(headerBottom + 28, window.innerHeight * 0.3);
 
   const ordered = navItems
     .map((item) => ({ id: item.id, el: document.getElementById(item.id) }))
-    .filter((x): x is { id: string; el: HTMLElement } => Boolean(x.el))
+    .filter((x): x is { id: NavId; el: HTMLElement } => Boolean(x.el))
     .sort((a, b) => a.el.offsetTop - b.el.offsetTop);
 
   if (ordered.length === 0) return "hero";
@@ -37,7 +38,7 @@ function pickActiveSectionIdFromScroll(): string {
 }
 
 export function TopNav() {
-  const [active, setActive] = useState<string>("hero");
+  const [active, setActive] = useState<NavId>("hero");
   const scrollDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const applyScrollSpy = useCallback(() => {
@@ -55,7 +56,8 @@ export function TopNav() {
   const setActiveFromHref = useCallback((href: string | null) => {
     if (!href?.startsWith("#")) return;
     const id = href.slice(1);
-    if (NAV_IDS.has(id)) setActive(id);
+    const hit = navItems.find((item) => item.id === id);
+    if (hit) setActive(hit.id);
   }, []);
 
   useEffect(() => {
