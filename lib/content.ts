@@ -15,15 +15,15 @@ export const siteMeta = {
   description:
     "Marta Vaitkevich's portfolio for beauty, lifestyle, and ad-ready UGC video creation.",
   instagram: "https://www.instagram.com/callme.martix/",
-instagramHandle: "@callme.martix",
+  instagramHandle: "@callme.martix",
   email: "martavaitkevich@gmail.com"
 } as const;
 
 /** Порядок пунктов совпадает с порядком секций на главной (для навигации и футера). */
 export const navItems = [
   { label: "Home", href: "#hero", id: "hero" },
-  { label: "About", href: "#about", id: "about" },
   { label: "Portfolio", href: "#showcase", id: "showcase" },
+  { label: "About", href: "#about", id: "about" },
   { label: "Pricing", href: "#pricing", id: "pricing" },
   { label: "Contact", href: "#contact", id: "contact" }
 ] as const;

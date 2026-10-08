@@ -1,75 +1,39 @@
-"use client";
+﻿"use client";
 
 import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
 import { siteMeta } from "@/lib/content";
-import { ArrowUpRight, Mail } from "lucide-react";
-
-function InstagramIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.7"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="h-4 w-4"
-      aria-hidden="true"
-    >
-      <rect x="3" y="3" width="18" height="18" rx="5" />
-      <circle cx="12" cy="12" r="4" />
-      <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" stroke="none" />
-    </svg>
-  );
-}
+import { ArrowUpRight } from "lucide-react";
 
 export function CTA() {
   return (
-    <section id="contact" className="section-border px-5 py-24 md:px-10 md:py-28">
-      <AnimatedReveal className="mx-auto max-w-6xl">
-        <div className="relative overflow-hidden rounded-[2.2rem] border border-[color:rgba(96,65,51,0.14)] bg-[var(--text)] p-8 text-[#fff7f1] shadow-[0_30px_80px_rgba(83,53,43,0.2)] md:p-14">
-          <div
-            className="pointer-events-none absolute -right-16 top-0 h-56 w-56 rounded-full bg-[color:rgba(227,183,162,0.18)] blur-3xl"
-            aria-hidden
-          />
-          <div className="relative grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
-            <div>
-              <p className="eyebrow text-[11px] font-semibold text-[#efccbc]">Contact</p>
-              <h2 className="font-display mt-5 balanced-text text-4xl leading-[0.94] text-[#fff8f2] md:text-[4.4rem]">
-                Need UGC or an edit?
-              </h2>
-              <p className="mt-6 max-w-xl text-sm leading-relaxed text-[#ead7cf] sm:text-base">
-                Send a short brief or the product details — Marta can film, edit, or take it from idea
-                to final cut.
-              </p>
+    <section id="contact" className="section-wrap bg-[var(--text)] text-[#f9f2e9]">
+      <div className="editorial-container">
+        <AnimatedReveal>
+          <div className="flex items-center justify-between gap-4 border-b border-[#f9f2e9]/25 pb-4">
+            <p className="eyebrow !text-[#edb39b]">05 / Contact</p>
+            <p className="text-xs text-[#f9f2e9]/75">Let&apos;s create together</p>
+          </div>
+          <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,0.6fr)] lg:items-end lg:gap-16">
+            <div className="min-w-0">
+              <h2 className="font-display text-[clamp(3.25rem,8vw,8rem)] leading-[0.92] tracking-[-0.045em]">Need UGC<br />or <span className="italic text-[#edb39b]">an edit?</span></h2>
+              <p className="mt-8 max-w-lg text-base leading-relaxed text-[#f9f2e9]/80">Send a short brief or the product details — Marta can film, edit, or take it from idea to final cut.</p>
             </div>
-            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap lg:flex-col lg:items-stretch">
-              <a
-                href={`mailto:${siteMeta.email}`}
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#fff4ec] px-6 py-3.5 text-sm font-semibold tracking-wide text-[var(--text)] transition hover:bg-white"
-              >
-                Start a project
-                <ArrowUpRight className="h-4 w-4" strokeWidth={1.5} />
-              </a>
-              <a
-                href={`mailto:${siteMeta.email}`}
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/14 bg-white/6 px-5 py-3.5 text-sm text-[#f6e4da] transition hover:border-[#f2d0c0] hover:text-white"
-              >
-                <Mail className="h-4 w-4" strokeWidth={1.5} /> {siteMeta.email}
-              </a>
-              <a
-                href={siteMeta.instagram}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/14 bg-white/6 px-5 py-3.5 text-sm text-[#f6e4da] transition hover:border-[#f2d0c0] hover:text-white"
-              >
-                <InstagramIcon /> {siteMeta.instagramHandle}
-              </a>
+            <a href={`mailto:${siteMeta.email}`} className="group inline-flex min-h-14 items-center justify-between gap-6 border-b border-[#f9f2e9]/60 py-4 text-lg transition-colors hover:text-[#edb39b]">
+              Start a project<ArrowUpRight className="h-8 w-8 transition-transform duration-200 motion-safe:group-hover:-translate-y-1 motion-safe:group-hover:translate-x-1" strokeWidth={1.2} aria-hidden="true" />
+            </a>
+          </div>
+          <div className="mt-14 grid gap-7 border-t border-[#f9f2e9]/25 pt-7 sm:grid-cols-2 md:mt-20">
+            <div className="min-w-0">
+              <p className="mb-2 text-xs text-[#f9f2e9]/65">Email</p>
+              <a href={`mailto:${siteMeta.email}`} className="inline-flex min-h-11 items-center break-all text-base underline decoration-[#f9f2e9]/40 underline-offset-8 transition-colors hover:text-[#edb39b] md:text-xl">{siteMeta.email}</a>
+            </div>
+            <div className="sm:justify-self-end">
+              <p className="mb-2 text-xs text-[#f9f2e9]/65">Instagram</p>
+              <a href={siteMeta.instagram} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center gap-3 text-base underline decoration-[#f9f2e9]/40 underline-offset-8 transition-colors hover:text-[#edb39b] md:text-xl">{siteMeta.instagramHandle}<ArrowUpRight className="h-4 w-4" aria-hidden="true" /></a>
             </div>
           </div>
-        </div>
-      </AnimatedReveal>
+        </AnimatedReveal>
+      </div>
     </section>
   );
 }

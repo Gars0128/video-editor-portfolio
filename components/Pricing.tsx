@@ -1,95 +1,47 @@
 "use client";
 
 import { AnimatedReveal } from "@/components/ui/AnimatedReveal";
-import { SectionHeading } from "@/components/ui/SectionHeading";
 import { pricingItems } from "@/lib/content";
-import { motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 
 export function Pricing() {
-  const reduceMotion = useReducedMotion();
-  const displayItems = [pricingItems[1], pricingItems[0], pricingItems[2]];
-
   return (
-    <section id="pricing" className="section-border px-5 py-24 md:px-10 md:py-28">
-      <div className="mx-auto max-w-6xl">
-        <AnimatedReveal>
-          <SectionHeading
-            index="03"
-            eyebrow="Pricing"
-            description="Packages start here and can scale with scope, deliverables, and turnaround."
-          />
+    <section id="pricing" className="section-wrap section-border">
+      <div className="editorial-container">
+        <AnimatedReveal className="mb-12 grid gap-6 md:grid-cols-2 md:items-end md:gap-16">
+          <div>
+            <p className="eyebrow mb-5">03 / Pricing</p>
+            <h2 className="font-display text-[clamp(3rem,5.5vw,5.5rem)] leading-[0.98] tracking-[-0.04em]">Your next<br /><span className="italic text-[var(--accent-deep)]">creative collaboration.</span></h2>
+          </div>
+          <p className="max-w-md text-base leading-relaxed text-[var(--muted)] md:ml-auto">Packages start here and can scale with scope, deliverables, and turnaround.</p>
         </AnimatedReveal>
-
-        <div className="grid gap-5 lg:grid-cols-3">
-          {displayItems.map((item, index) => (
-            <AnimatedReveal key={item.title} delay={index * 0.06}>
-              <motion.article
-                whileHover={
-                  reduceMotion
-                    ? undefined
-                    : { y: -4, transition: { duration: 0.22, ease: [0.22, 1, 0.36, 1] } }
-                }
-                className={`relative h-full rounded-[2rem] border p-6 md:p-7 ${
-                  index === 1
-                    ? "border-[color:rgba(112,61,46,0.22)] bg-[var(--text)] text-[#fff7f1]"
-                    : "panel"
-                }`}
-              >
-                <p
-                  className={`eyebrow text-[10px] font-semibold ${
-                    index === 1 ? "text-[#f0cbbb]" : ""
-                  }`}
-                >
-                  {index === 1 ? "Most requested" : "Package"}
-                </p>
-                <h3
-                  className={`mt-4 font-display text-[2.4rem] leading-none ${
-                    index === 1 ? "text-[#fff8f2]" : "text-[var(--text)]"
-                  }`}
-                >
-                  {item.title}
-                </h3>
-                <p
-                  className={`mt-5 text-3xl font-semibold tracking-tight ${
-                    index === 1 ? "text-[#fff8f2]" : "text-[var(--accent-deep)]"
-                  }`}
-                >
-                  {item.price}
-                </p>
-                <p
-                  className={`mt-3 text-sm leading-relaxed ${
-                    index === 1 ? "text-[#ead8cf]" : "text-[var(--muted)]"
-                  }`}
-                >
-                  {item.description}
-                </p>
-                <ul
-                  className={`mt-6 space-y-3 text-sm leading-relaxed ${
-                    index === 1 ? "text-[#f5e6de]" : "text-[var(--text)]/88"
-                  }`}
-                >
-                  {item.includes.map((entry) => (
-                    <li key={entry} className="flex gap-3">
-                      <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-[var(--accent)]" />
-                      <span>{entry}</span>
-                    </li>
-                  ))}
-                </ul>
-                <a
-                  href="#contact"
-                  className={`mt-8 inline-flex min-h-11 items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition ${
-                    index === 1
-                      ? "bg-[#fff4ec] text-[var(--text)] hover:bg-white"
-                      : "border border-[color:rgba(96,65,51,0.14)] bg-white/60 text-[var(--text)] hover:border-[var(--accent)]"
-                  }`}
-                >
-                  Ask about this option
-                  <ArrowUpRight className="h-4 w-4" strokeWidth={1.7} />
-                </a>
-              </motion.article>
-            </AnimatedReveal>
-          ))}
+        <div className="grid gap-6 lg:grid-cols-[1fr_1.12fr_1fr] lg:gap-7 lg:pt-4">
+          {pricingItems.map((item, index) => {
+            const featured = index === 0;
+            return (
+              <AnimatedReveal key={item.title} delay={index * 0.06} className={`flex min-w-0 ${featured ? "lg:order-2" : index === 1 ? "lg:order-1" : "lg:order-3"}`}>
+                <article data-featured={featured || undefined} className={`pricing-package flex w-full flex-col ${featured ? "pricing-featured" : "pricing-secondary"}`}>
+                  <div className="flex min-h-7 flex-wrap items-center justify-between gap-3">
+                    <p className="eyebrow text-[10px]">{featured ? "Full creation" : index === 1 ? "Before the camera" : "Post-production"}</p>
+                    {featured && <span className="pricing-popular">Most popular</span>}
+                  </div>
+                  <h3 className="mt-5 font-display text-[2.2rem] leading-[1.1] tracking-[-0.03em] lg:min-h-[2.2em]">{item.title}</h3>
+                  <p className={`pricing-price mt-6 font-display leading-tight ${featured ? "text-[3.5rem]" : "text-4xl"}`}>
+                    {featured ? <><span className="text-lg">from</span>{" "}<span>{item.price.replace(/^from /, "")}</span></> : item.price}
+                  </p>
+                  <p className="pricing-muted mt-4 text-sm leading-relaxed lg:min-h-[3em]">{item.description}</p>
+                  <ul className="mb-8 mt-7 flex-1 space-y-4 text-sm leading-relaxed">
+                    {item.includes.map((entry) => (
+                      <li key={entry} className="flex gap-3"><span className="pricing-dash mt-[0.65em] h-px w-3 shrink-0" aria-hidden="true" /><span>{entry}</span></li>
+                    ))}
+                  </ul>
+                  <a href="#contact" className={`group inline-flex min-h-12 items-center justify-between gap-4 text-sm font-semibold transition-colors ${featured ? "pricing-featured-action px-5 py-4" : "border-t border-[var(--border)] py-3 hover:text-[var(--accent-deep)]"}`} aria-label={`Ask about ${item.title}`}>
+                    {featured ? "Start a UGC project" : "Ask about this option"}<ArrowUpRight className="h-5 w-5 shrink-0 transition-transform duration-200 motion-safe:group-hover:-translate-y-0.5 motion-safe:group-hover:translate-x-0.5" strokeWidth={1.5} aria-hidden="true" />
+                  </a>
+                </article>
+              </AnimatedReveal>
+            );
+          })}
         </div>
       </div>
     </section>

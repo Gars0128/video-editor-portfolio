@@ -1,6 +1,10 @@
 "use client";
 
+import { useReducedMotion } from "@/lib/useReducedMotion";
+
 import { navItems } from "@/lib/content";
+import { Menu, X } from "lucide-react";
+import { motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 type NavId = (typeof navItems)[number]["id"];
@@ -38,7 +42,11 @@ function pickActiveSectionIdFromScroll(): NavId {
 }
 
 export function TopNav() {
+  const reduceMotion = useReducedMotion();
   const [active, setActive] = useState<NavId>("hero");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const headerRef = useRef<HTMLElement>(null);
   const scrollDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const applyScrollSpy = useCallback(() => {
@@ -61,15 +69,12 @@ export function TopNav() {
   }, []);
 
   useEffect(() => {
-    const fromHash = readHashNavId();
-    if (fromHash) setActive(fromHash);
-    else applyScrollSpy();
-
     const onHash = () => {
       const id = readHashNavId();
       if (id) setActive(id);
       else applyScrollSpy();
     };
+    const initialFrame = requestAnimationFrame(onHash);
 
     window.addEventListener("hashchange", onHash);
     window.addEventListener("scroll", scheduleScrollSpy, { passive: true });
@@ -79,6 +84,7 @@ export function TopNav() {
     window.addEventListener("scrollend" as keyof WindowEventMap, onScrollEnd as EventListener);
 
     return () => {
+      cancelAnimationFrame(initialFrame);
       if (scrollDebounceRef.current != null) clearTimeout(scrollDebounceRef.current);
       window.removeEventListener("hashchange", onHash);
       window.removeEventListener("scroll", scheduleScrollSpy);
@@ -87,25 +93,45 @@ export function TopNav() {
     };
   }, [applyScrollSpy, scheduleScrollSpy]);
 
+  useEffect(() => {
+    if (!menuOpen) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+        menuButtonRef.current?.focus();
+      }
+    };
+    const closeOutside = (event: PointerEvent) => {
+      if (!headerRef.current?.contains(event.target as Node)) setMenuOpen(false);
+    };
+    const desktop = window.matchMedia("(min-width: 1024px)");
+    const closeOnDesktop = () => { if (desktop.matches) setMenuOpen(false); };
+    window.addEventListener("keydown", closeOnEscape);
+    window.addEventListener("pointerdown", closeOutside);
+    desktop.addEventListener("change", closeOnDesktop);
+    return () => {
+      window.removeEventListener("keydown", closeOnEscape);
+      window.removeEventListener("pointerdown", closeOutside);
+      desktop.removeEventListener("change", closeOnDesktop);
+    };
+  }, [menuOpen]);
+
   return (
-    <header className="fixed inset-x-0 top-0 z-50 px-4 pt-4 md:px-6">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 rounded-full border border-[color:rgba(96,65,51,0.12)] bg-[rgba(255,248,241,0.78)] px-4 py-2.5 shadow-[0_14px_40px_rgba(111,76,61,0.08)] backdrop-blur-xl md:gap-3 md:px-5">
+    <header ref={headerRef} className="site-nav fixed inset-x-0 top-0 z-50 px-5 md:px-10">
+      <div className="nav-inner editorial-container flex items-center justify-between gap-3">
         <a
           href="#hero"
-          className="min-h-11 shrink-0 py-2"
-          onClick={() => setActive("hero")}
+          aria-label="Marta Vaitkevich - home"
+          className="min-h-11 min-w-0 py-2"
+          onClick={() => { setActive("hero"); setMenuOpen(false); }}
         >
-          <span className="block font-display text-sm tracking-[0.22em] text-[var(--text)]">
-            MARTA VAITKEVICH
-          </span>
-          <span className="hidden text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--muted)] sm:block">
-            UGC creator and video editor
-          </span>
+          <span className="nav-wordmark" aria-hidden="true">Marta<span className="text-[var(--accent-deep)]">.</span></span>
+          <span className="nav-byline">Vaitkevich / UGC &amp; video</span>
         </a>
 
         <nav
           aria-label="Main navigation"
-          className="hidden min-w-0 flex-1 items-stretch gap-1 px-1 sm:px-3 md:px-4 lg:flex"
+          className="hidden min-w-0 items-stretch gap-4 lg:flex"
         >
           {navItems
             .filter((item) => item.id !== "hero")
@@ -115,14 +141,12 @@ export function TopNav() {
                 <a
                   key={item.id}
                   href={item.href}
+                  aria-current={isActive ? "location" : undefined}
                   onClick={() => setActiveFromHref(item.href)}
-                  className={`flex min-h-11 flex-1 items-center justify-center rounded-full px-2 py-2 text-center text-xs font-semibold tracking-[0.08em] transition sm:px-3 ${
-                    isActive
-                      ? "bg-[var(--text)] text-[#fff6ef]"
-                      : "text-[var(--muted)] hover:text-[var(--text)]"
-                  }`}
+                  className="nav-link"
                 >
                   {item.label}
+                  {isActive && <motion.span layoutId="active-section" className="nav-active-line" transition={{ duration: reduceMotion ? 0 : 0.25, ease: [0.22, 1, 0.36, 1] }} aria-hidden />}
                 </a>
               );
             })}
@@ -132,12 +156,42 @@ export function TopNav() {
           <a
             href="#contact"
             onClick={() => setActive("contact")}
-            className="inline-flex min-h-11 items-center rounded-full bg-[var(--accent-deep)] px-4 py-3 text-xs font-semibold tracking-[0.08em] text-[#fff6ef] transition hover:bg-[var(--accent)]"
+            className="nav-project editorial-link text-[var(--accent-deep)]"
           >
             Start a project
           </a>
+          <button
+            ref={menuButtonRef}
+            type="button"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-navigation"
+            onClick={() => setMenuOpen(open => !open)}
+            className="inline-flex h-11 w-11 shrink-0 items-center justify-center text-[var(--text)] lg:hidden"
+          >
+            {menuOpen ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
+          </button>
         </div>
       </div>
+      {menuOpen && (
+        <nav
+          id="mobile-navigation"
+          aria-label="Mobile navigation"
+          className="nav-menu editorial-container grid max-h-[calc(100dvh-6.5rem)] gap-1 overflow-y-auto border-t bg-[var(--bg)] py-4 lg:hidden"
+        >
+          {navItems.filter(item => item.id !== "hero").map(item => (
+            <a
+              key={item.id}
+              href={item.href}
+              aria-current={active === item.id ? "location" : undefined}
+              className={`flex min-h-12 items-center px-4 text-sm font-semibold ${active === item.id ? "bg-[var(--text)] text-[#fff6ef]" : "text-[var(--text)] hover:bg-[var(--bg)]"}`}
+              onClick={() => { setActive(item.id); setMenuOpen(false); }}
+            >
+              {item.label}
+            </a>
+          ))}
+        </nav>
+      )}
     </header>
   );
 }

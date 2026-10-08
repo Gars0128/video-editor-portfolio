@@ -1,140 +1,80 @@
 "use client";
 
+import { useReducedMotion } from "@/lib/useReducedMotion";
+
 import { heroContent } from "@/lib/content";
-import { motion, useReducedMotion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { MagneticLink } from "@/components/ui/MagneticLink";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { ArrowDown, ArrowUpRight } from "lucide-react";
 import Image from "next/image";
+import { useRef } from "react";
 
 export function Hero() {
   const reduceMotion = useReducedMotion();
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const imageY = useTransform(scrollYProgress, [0, 1], [0, 45]);
+  const entrance = (delay: number) => ({
+    "data-entrance": true,
+    initial: { opacity: 1, y: 18 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: reduceMotion ? 0 : 0.8, delay: reduceMotion ? 0 : delay, ease: [0.22, 1, 0.36, 1] as const },
+  });
 
   return (
-    <section
-      id="hero"
-      className="relative overflow-hidden px-5 pb-20 pt-28 md:px-10 md:pb-24 md:pt-36"
-    >
-      {/* Лёгкий свет сверху без «прямоугольника» — общий фон уже в body / .site-shell */}
-      <div
-        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_120%_70%_at_50%_-20%,rgba(255,252,248,0.55),transparent_58%)]"
-        aria-hidden
-      />
-
-      <div className="relative mx-auto grid w-full max-w-6xl gap-12 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:items-center lg:gap-12">
-        <div className="relative z-10 max-w-[34rem]">
-          <motion.p
-            initial={reduceMotion ? false : { opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-            className="eyebrow inline-flex items-center gap-3 text-[11px] font-semibold"
-          >
-            <span className="accent-dot text-lg leading-none" aria-hidden>
-              •
-            </span>
-            <span>{heroContent.eyebrow}</span>
-          </motion.p>
-
-          <motion.h1
-            initial={reduceMotion ? false : { opacity: 0, y: 28 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.75, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
-            className="font-display balanced-text mt-6 max-w-[min(100%,34ch)] text-[clamp(2.05rem,3.6vw+0.75rem,3.35rem)] leading-[1.08] tracking-[-0.03em] text-[var(--text)] md:leading-[1.06] md:tracking-[-0.032em]"
-          >
-            {heroContent.title}
-          </motion.h1>
-
-          <motion.p
-            initial={reduceMotion ? false : { opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-5 max-w-xl text-base leading-relaxed text-[var(--muted)] md:text-lg"
-          >
-            {heroContent.description}
-          </motion.p>
-
-          <motion.p
-            initial={reduceMotion ? false : { opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.65, delay: 0.16, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-4 text-sm font-medium uppercase tracking-[0.18em] text-[var(--accent-deep)]"
-          >
-            UGC creator • video editor
-          </motion.p>
-
-          <motion.div
-            initial={reduceMotion ? false : { opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.65, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center"
-          >
-            <a
-              href={heroContent.primaryCta.href}
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[var(--accent-deep)] px-6 py-3 text-sm font-semibold tracking-wide text-[#fff7f1] transition hover:bg-[var(--accent)]"
-            >
-              {heroContent.primaryCta.label}
-              <ArrowUpRight className="h-4 w-4" strokeWidth={1.7} />
-            </a>
-            <a
-              href={heroContent.secondaryCta.href}
-              className="inline-flex min-h-12 items-center justify-center rounded-full border border-[color:rgba(96,65,51,0.18)] bg-white/45 px-6 py-3 text-sm font-semibold tracking-wide text-[var(--text)] transition hover:border-[var(--accent)] hover:text-[var(--accent-deep)]"
-            >
-              {heroContent.secondaryCta.label}
-            </a>
-          </motion.div>
-
-          <motion.dl
-            initial={reduceMotion ? false : { opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.28 }}
-            className="mt-10 grid gap-4 border-t border-[color:rgba(96,65,51,0.14)] pt-6 sm:grid-cols-3"
-          >
-            {heroContent.quickFacts.map((fact) => (
-              <div key={fact.label}>
-                <dt className="eyebrow text-[10px] font-semibold">{fact.label}</dt>
-                <dd className="mt-2 text-sm text-[var(--text)]">{fact.value}</dd>
-              </div>
-            ))}
-          </motion.dl>
-        </div>
-
-        <motion.div
-          initial={reduceMotion ? false : { opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.85, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-          className="relative mx-auto w-full max-w-[34rem] lg:mr-0"
-        >
-          <div className="glass relative overflow-hidden rounded-[2rem] p-3 shadow-[0_30px_80px_rgba(112,75,60,0.18)]">
-            <div className="relative overflow-hidden rounded-[1.55rem]">
-              <Image
-                src={heroContent.heroImage}
-                alt={heroContent.heroImageAlt}
-                width={1200}
-                height={1600}
-                priority
-                className="aspect-[4/5] w-full object-cover"
-              />
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[rgba(42,24,18,0.78)] via-[rgba(42,24,18,0.2)] to-transparent p-6 md:p-7">
-                <p className="font-display text-[1.9rem] leading-none text-[#fff8f2] md:text-[2.2rem]">
-                  Marta Vaitkevich
-                </p>
-              </div>
-            </div>
-
-            <div className="grid gap-3 border-t border-[color:rgba(96,65,51,0.12)] bg-white/55 p-4 md:grid-cols-[1fr_auto] md:items-center">
-              <div>
-                <p className="eyebrow text-[10px] font-semibold">What&apos;s inside</p>
-                <p className="mt-2 text-sm leading-relaxed text-[var(--text)]">
-                  UGC ads, organic content, hooks, filming, editing, and subtitles.
-                </p>
-              </div>
-              <a
-                href="#showcase"
-                className="inline-flex min-h-11 items-center justify-center rounded-full border border-[color:rgba(96,65,51,0.14)] bg-white px-4 py-2 text-xs font-semibold tracking-[0.08em] text-[var(--text)] transition hover:border-[var(--accent)] hover:text-[var(--accent-deep)]"
-              >
-                View portfolio
+    <section ref={ref} id="hero" className="hero-section">
+      <div className="editorial-container">
+        <div className="hero-grid">
+          <div className="hero-copy">
+            <motion.p {...entrance(0)} className="eyebrow flex items-center gap-3">
+              <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-deep)]" aria-hidden />
+              The beauty edit / Marta Vaitkevich
+            </motion.p>
+            <h1 className="hero-title" aria-label="Beauty, in motion.">
+              <span className="block overflow-hidden"><motion.span {...entrance(0.08)} aria-hidden className="block">Beauty,</motion.span></span>
+              <span className="block overflow-hidden pb-3"><motion.span {...entrance(0.18)} aria-hidden className="block italic text-[var(--accent-deep)]">in motion.</motion.span></span>
+            </h1>
+            <motion.div {...entrance(0.28)}>
+              <p className="mb-4 text-sm font-medium tracking-[0.04em] sm:text-base">{heroContent.title}</p>
+              <p className="max-w-[37ch] text-base leading-relaxed text-[var(--muted)]">{heroContent.description}</p>
+            </motion.div>
+            <motion.div {...entrance(0.38)} className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-4 sm:mt-10">
+              <MagneticLink href={heroContent.primaryCta.href} className="button-primary">
+                Watch my work <ArrowUpRight size={18} aria-hidden />
+              </MagneticLink>
+              <a href={heroContent.secondaryCta.href} className="editorial-link min-h-12">
+                {heroContent.secondaryCta.label} <ArrowUpRight size={16} aria-hidden />
               </a>
-            </div>
+            </motion.div>
+            <motion.dl {...entrance(0.46)} className="hero-facts">
+              {heroContent.quickFacts.map(fact => (
+                <div key={fact.label} className="min-w-0">
+                  <dt className="eyebrow text-[9px] sm:text-[10px]">{fact.label}</dt>
+                  <dd className="mt-2 text-xs leading-relaxed text-[var(--muted)] sm:text-sm">{fact.value}</dd>
+                </div>
+              ))}
+            </motion.dl>
           </div>
-        </motion.div>
+          <motion.figure {...entrance(0.12)} className="hero-figure">
+            <span className="hero-frame-note" aria-hidden="true">A personal point of view</span>
+            <div className="hero-image-frame">
+              <motion.div className="absolute -inset-y-8 inset-x-0" style={{ y: reduceMotion ? 0 : imageY }}>
+                <Image src={heroContent.heroImage} alt={heroContent.heroImageAlt} fill priority sizes="(min-width: 1440px) 560px, (min-width: 768px) 44vw, calc(100vw - 40px)" className="object-cover object-[50%_45%]" />
+              </motion.div>
+              <div className="hero-image-caption">
+                <span className="text-[10px] uppercase tracking-[0.22em]">The creator behind the frame</span>
+                <span className="font-display mt-2 block text-3xl sm:text-4xl">Marta Vaitkevich</span>
+              </div>
+            </div>
+            <figcaption className="mt-4 flex items-center justify-between gap-4 text-[10px] uppercase tracking-[0.16em] text-[var(--muted)]">
+              <span>Beauty · fashion · lifestyle</span>
+              <span className="shrink-0">01 / Portrait</span>
+            </figcaption>
+          </motion.figure>
+        </div>
+        <motion.a {...entrance(0.55)} href="#showcase" className="hero-scroll editorial-link">
+          Explore selected work <ArrowDown size={16} aria-hidden />
+        </motion.a>
       </div>
     </section>
   );

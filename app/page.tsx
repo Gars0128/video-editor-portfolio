@@ -10,11 +10,12 @@ import { VideoShowcase } from "@/components/VideoShowcase";
 export default function HomePage() {
   return (
     <div className="site-shell relative min-h-screen overflow-x-clip">
+      <a href="#showcase" className="skip-link">Skip to selected work</a>
       <main className="relative z-10">
         <TopNav />
         <Hero />
-        <About />
         <VideoShowcase />
+        <About />
         <Pricing />
         <Services />
         <CTA />

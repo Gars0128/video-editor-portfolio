@@ -6,7 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test:responsive": "node scripts/check-responsive.cjs",
+    "debug:browser": "node scripts/debug-browser.cjs",
+    "test:portfolio": "node scripts/check-portfolio.cjs",
+    "typecheck": "tsc --noEmit",
+    "test:design": "node scripts/check-design.cjs"
   },
   "keywords": [],
   "author": "",
@@ -14,19 +19,21 @@
   "dependencies": {
     "framer-motion": "^12.38.0",
     "lucide-react": "^1.7.0",
-    "next": "^16.2.1",
+    "next": "^16.4.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@tailwindcss/postcss": "^4.2.2",
     "@types/node": "^25.5.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "autoprefixer": "^10.4.27",
     "eslint": "^9.39.4",
-    "eslint-config-next": "^16.2.1",
-    "postcss": "^8.5.8",
+    "eslint-config-next": "^16.4.0",
+    "playwright": "^1.64.0",
+    "postcss": "^8.5.23",
     "tailwindcss": "^4.2.2",
     "typescript": "^5.9.3"
   }
