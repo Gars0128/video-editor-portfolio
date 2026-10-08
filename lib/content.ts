@@ -14,8 +14,8 @@ export const siteMeta = {
   title: "Marta Vaitkevich | UGC Creator & Video Editor",
   description:
     "Marta Vaitkevich's portfolio for beauty, lifestyle, and ad-ready UGC video creation.",
-  instagram: "https://www.instagram.com/mrtvld/",
-  instagramHandle: "mrtvld",
+  instagram: "https://www.instagram.com/callme.martix/",
+instagramHandle: "@callme.martix",
   email: "martavaitkevich@gmail.com"
 } as const;
 
